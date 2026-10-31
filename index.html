@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Board Streak</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14213d">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef2f7;--card:#fff;--tx:#14213d;--mut:#5d6b85;--bd:#d6deea;--ac:#e07a00;--ok:#1f9d55;--no:#d93636;--soft:#e3e9f2;--bar:#14213d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#172038;--tx:#eaf0ff;--mut:#93a1c2;--bd:#26324f;--ac:#ffb020;--ok:#3ddc84;--no:#ff6b6b;--soft:#1f2a46;--bar:#ffb020}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#172038;--tx:#eaf0ff;--mut:#93a1c2;--bd:#26324f;--ac:#ffb020;--ok:#3ddc84;--no:#ff6b6b;--soft:#1f2a46;--bar:#ffb020}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.btn{border:1.5px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;gap:6px;align-items:center;flex:none}
+.btn:focus-visible,.box:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+h1{font:700 24px/1.1 Georgia,serif;margin:0}
+.date{color:var(--mut);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font:700 24px Georgia,serif}.stat span{font-size:12px;color:var(--mut)}
+.banner{background:var(--soft);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+.task{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px}
+.task.miss{border-color:var(--no)}.task.done{border-color:var(--ok)}
+.box{width:42px;height:42px;flex:none;border-radius:10px;border:2.5px solid var(--tx);background:transparent;font-size:22px;line-height:1;color:var(--tx);cursor:pointer}
+.box:disabled{cursor:not-allowed;opacity:.5}
+.done .box{background:var(--ok);border-color:var(--ok);color:#fff;opacity:1}
+.miss .box{border-color:var(--no);opacity:1}
+.time{font-size:13px;font-weight:700;color:var(--ac)}
+.t{flex:1;min-width:0;font-weight:600}.done .t{text-decoration:line-through;color:var(--mut)}
+.s{font-size:13px;color:var(--mut);font-weight:400}.miss .s{color:var(--no);font-weight:700}.done .s{color:var(--ok);font-weight:700}
+h2{font:700 18px Georgia,serif;margin:22px 0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.big{font:700 56px/1 Georgia,serif}
+.bar{height:16px;border-radius:99px;background:var(--soft);overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;background:var(--bar);border-radius:99px;transition:width .5s}
+.map{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wd{font-size:11px;text-align:center;color:var(--mut)}
+.d{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--soft);color:var(--mut)}
+.d.ok{background:var(--ok);color:#fff}.d.x{background:var(--no);color:#fff}.d.part{background:transparent;border:2px dashed var(--ac);color:var(--tx)}
+.d.today{outline:3px solid var(--tx);outline-offset:1px}
+.badges{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.bd{border:1px solid var(--bd);border-radius:12px;padding:10px;background:var(--card)}
+.bd.lock{opacity:.45;filter:grayscale(1)}.bd b{display:block}.bd span{font-size:12px;color:var(--mut)}
+.note{font-size:13px;color:var(--mut)}
+summary{cursor:pointer;font-weight:700}
+.chart{max-height:360px;overflow:auto;margin-top:8px}
+.chart div{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.chart b{flex:none;width:76px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const KEY='boardstreak_v2',GOAL=300,N=81,ST=new Date(2026,10,1);
+const P=['T:Diagnostic basics: arithmetic, science concepts, reading','Maths: Real Numbers','Science: Chemical Reactions and Equations','SST: History: Rise of Nationalism in Europe','Maths: Polynomials','English: A Letter to God','Science: Acids, Bases and Salts','T:Science',
+'Hindi: Kshitij: Surdas - Pad','Maths: Pair of Linear Equations','IT: Employability: Communication Skills-II','SST: History: Nationalism in India','Science: Metals and Non-metals','Maths: Quadratic Equations','T:SST',
+'English: Nelson Mandela: Long Walk to Freedom','Hindi: Kshitij: Tulsidas - Ram Lakshman Parshuram Samvad','IT: Employability: Self-Management Skills-II','SST: History: Making of a Global World (prescribed sections)','Maths: Arithmetic Progressions','Science: Carbon and its Compounds','T:English',
+'SST: History: Print Culture and the Modern World','Maths: Triangles','English: Two Stories about Flying','Science: Life Processes','Hindi: Kshitij: Jayashankar Prasad - Atmakathya','Maths: Coordinate Geometry','T:Hindi',
+'IT: Employability: ICT Skills-II','SST: Geography: Resources and Development','Science: Control and Coordination','Maths: Introduction to Trigonometry','English: From the Diary of Anne Frank','Hindi: Kshitij: Nirala - Utsah / At Nahi Rahi Hai','T:IT',
+'IT: Employability: Entrepreneurial Skills-II','SST: Geography: Forest and Wildlife Resources','Maths: Applications of Trigonometry','Science: How Do Organisms Reproduce?','SST: Geography: Water Resources','Maths: Circles','T:Maths',
+'English: Glimpses of India','Science: Heredity','Hindi: Kshitij: Nagarjun - Yah Danturit Muskan / Fasal','Maths: Areas Related to Circles','IT: Employability: Green Skills-II','SST: Geography: Manufacturing Industries','T:Science',
+'Science: Electricity','Maths: Probability','English: The Sermon at Benares','Hindi: Kshitij: Balgobin Bhagat','IT: Electronic Spreadsheet (Advanced): Scenarios / Goal Seek','SST: Geography: Lifelines of National Economy (map work)','T:SST',
+'Maths: Real Numbers (revision)','Science: Magnetic Effects of Electric Current','SST: Civics: Power Sharing','Maths: Polynomials (revision)','English: Poems: The Ball Poem / Amanda!','Science: Metals and Non-metals (revision)','T:English',
+'Hindi: Kshitij: Sanskriti','Maths: Triangles (revision)','IT: Healthy, Safe and Secure Working Environment','SST: Civics: Outcomes of Democracy','Science: Carbon and its Compounds (revision)','Maths: Coordinate Geometry (revision)','T:Hindi',
+'English: Poems: The Trees / Fog','Hindi: Kritika: Mata ka Anchal','IT: IT practical: Writer + Calc','SST: Economics: Development','Maths: Introduction to Trigonometry (revision)','Science: Life Processes (revision)','T:IT',
+'SST: Economics: Sectors of Indian Economy','Maths: Applications of Trigonometry (revision)','English: Poems: The Tale of Custard the Dragon / For Anne Gregory'];
+let S=null;
+const pad=n=>String(n).padStart(2,'0');
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dOf=i=>new Date(2026,10,1+i);
+const toM=s=>{const[a,b]=s.split(':');return +a*60+ +b};
+const f12=s=>{let[h,m]=s.split(':');h=+h;return(h%12||12)+':'+m+(h>=12?' PM':' AM')};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nowIdx=()=>{const n=new Date();return Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate())-ST)/864e5)};
+const nowM=()=>{const n=new Date();return n.getHours()*60+n.getMinutes()};
+function recall(i){if(i===1)return'Baseline: Maths formulas + Science recall';
+ for(let j=i-1;j>=0;j--)if(!P[j].startsWith('T:'))return P[j];return''}
+function tasks(i){const c=P[i];
+ if(c.startsWith('T:'))return[
+ {id:1,s:'18:30',e:'19:30',t:'Weekly test, 25 marks: '+c.slice(2),n:'60 min · 5×1, 4×2, 3×4 marks'},
+ {id:2,s:'19:30',e:'20:00',t:'Correction: score + error log',n:'30 min'},
+ {id:3,s:'20:00',e:'20:45',t:'School homework',n:'45 min'},
+ {id:4,s:'20:45',e:'21:00',t:'Backlog: missed PYQs',n:'15 min'}];
+ return[
+ {id:1,s:'18:30',e:'19:00',t:'Recall: '+recall(i),n:'30 min'},
+ {id:2,s:'19:00',e:'19:45',t:'Homework: school + tuition',n:'45 min'},
+ {id:3,s:'19:45',e:'20:30',t:'Study: '+c,n:'20 min learn · 15 min NCERT · 10 min quiz'},
+ {id:4,s:'20:30',e:'21:00',t:'PYQs: '+c,n:'3 to 6 questions'}]}
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}if(!S||!S.log)S={log:{}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function settle(){const ni=nowIdx(),nm=nowM();
+ for(let i=0;i<=Math.min(ni,N-1);i++){const k=ds(dOf(i));S.log[k]=S.log[k]||{};
+  tasks(i).forEach(t=>{if(S.log[k][t.id])return;if(i<ni||toM(t.e)<nm)S.log[k][t.id]='miss'})}
+ save()}
+function dayStatus(i){const l=S.log[ds(dOf(i))]||{},v=tasks(i).map(t=>l[t.id]);
+ if(v.includes('miss'))return'x';if(v.every(x=>x==='done'))return'ok';return i===nowIdx()?'part':'x'}
+function totals(){let score=0,done=0,miss=0;
+ Object.keys(S.log).sort().forEach(k=>Object.values(S.log[k]).forEach(v=>{if(v==='done'){done++;score++}else{miss++;score=Math.max(0,score-1)}}));
+ return{score,done,miss}}
+function runs(){let cur=0,best=0;
+ for(let i=0;i<=Math.min(nowIdx(),N-1);i++){const s=dayStatus(i);
+  if(s==='ok'){cur++;best=Math.max(best,cur)}else if(s==='x')cur=0}
+ return{cur,best}}
+function badges(t,r){return[
+['🌱','First tick','Finish 1 task on time',t.done>=1],
+['✏️','25 on time','25 ticks before deadline',t.done>=25],
+['📚','100 on time','100 ticks before deadline',t.done>=100],
+['🏅','250 on time','250 ticks before deadline',t.done>=250],
+['🔥','3-day streak','3 perfect days in a row',r.best>=3],
+['⚡','7-day streak','7 perfect days in a row',r.best>=7],
+['💎','21-day streak','21 perfect days in a row',r.best>=21],
+['👑','50-day streak','50 perfect days in a row',r.best>=50],
+['🎯','Halfway','Reach half the points goal',t.score>=GOAL/2],
+['🏆','95% club','Reach the full points goal',t.score>=GOAL]]}
+function tick(id){settle();const i=nowIdx();if(i<0||i>=N)return;
+ const k=ds(dOf(i)),t=tasks(i).find(x=>x.id==id),l=S.log[k];
+ if(l[id]==='miss'||nowM()>toM(t.e))return;
+ if(l[id]==='done')delete l[id];else l[id]='done';save();render()}
+function left(e){const m=toM(e)-nowM();return m<60?m+' min left':Math.floor(m/60)+'h '+pad(m%60)+'m left'}
+function home(){const ni=nowIdx(),i=Math.max(0,Math.min(N-1,ni)),live=ni>=0&&ni<N;
+ const l=S.log[ds(dOf(i))]||{},t=totals(),r=runs();
+ const dn=Object.values(l).filter(x=>x==='done').length;
+ const banner=ni<0?'Your plan starts on Sun 1 Nov. This is Day 1 as a preview.':ni>=N?'The 81-day plan is finished. This is the last day.':'';
+ const list=tasks(i).map(x=>{const st=live?(l[x.id]||''):'';
+  const sub=st==='done'?'Done on time ✅':st==='miss'?'❌ Missed, deadline '+f12(x.e):live?'Finish by '+f12(x.e)+' · '+left(x.e):'Finish by '+f12(x.e);
+  return`<div class="task ${st}"><button class="box" data-id="${x.id}" ${live?'':'disabled'} aria-label="${esc(x.t)}">${st==='done'?'✓':st==='miss'?'❌':''}</button><div class="t"><div class="time">${f12(x.s)} – ${f12(x.e)}</div>${esc(x.t)}<div class="s">${esc(x.n)} · ${sub}</div></div></div>`}).join('');
+ const dt=dOf(i).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+ return`<header><a class="btn" href="#streak">🔥 ${r.cur}</a><div><h1>Today’s plan</h1><div class="date">${dt} · Day ${i+1} of ${N}</div></div></header>
+ ${banner?`<div class="banner">${banner}</div>`:''}
+ <div class="stats"><div class="stat"><b>${dn}/4</b><span>done today</span></div><div class="stat"><b>${t.score}</b><span>streak points</span></div><div class="stat"><b>${r.cur}</b><span>day streak</span></div></div>
+ ${list}
+ <h2>Settings</h2><div class="card"><p class="note">Backup keeps your streak safe if browser data is cleared. Tap Show backup, copy the text and save it in a note. To restore, paste it here and tap Restore.</p><textarea id="bk" style="width:100%;min-height:70px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="bshow">Show backup</button><button class="btn" id="brest">Restore</button><button class="btn" id="reset">Reset all progress</button></div></div>`}
+function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/GOAL*95);
+ const cells=['S','M','T','W','T','F','S'].map(x=>`<div class="wd">${x}</div>`);
+ for(let i=0;i<N;i++){const s=i<=ni?dayStatus(i):'';cells.push(`<div class="d ${s} ${i===ni?'today':''}" title="Day ${i+1}">${dOf(i).getDate()}</div>`)}
+ const b=badges(t,r),got=b.filter(x=>x[3]).length;
+ const rows=P.map((c,i)=>`<div><b>${dOf(i).toLocaleDateString('en-IN',{day:'2-digit',month:'short',weekday:'short'})}</b><span>${c.startsWith('T:')?'Weekly test: '+esc(c.slice(2)):esc(c)}</span></div>`).join('');
+ return`<header><a class="btn" href="#home">← Home</a><div><h1>Streak</h1><div class="date">Day ${Math.max(0,Math.min(N,ni+1))} of ${N}</div></div></header>
+ <div class="card"><div class="big">🔥 ${r.cur}</div><div class="date">day streak · best ${r.best} · ${t.done} on time · ${t.miss} missed</div></div>
+ <h2>Path to 95% in boards</h2><div class="card"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="95" aria-valuenow="${pct.toFixed(1)}"><i style="width:${pct/95*100}%"></i></div>
+ <b>${pct.toFixed(1)}%</b> of the 95% target<div class="note">Each on-time tick adds 1 point and each missed task removes 1. ${t.score} of ${GOAL} points. The plan has ${N*4} tasks.</div></div>
+ <h2>Streak map · 1 Nov to 20 Jan</h2><div class="card"><div class="map">${cells.join('')}</div>
+ <div class="note" style="margin-top:10px">Green = all 4 tasks on time · Red = a missed task · Dashed = today in progress</div></div>
+ <h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
+ <h2>Plan</h2><details class="card"><summary>Chapter for every day</summary><div class="chart">${rows}</div></details>`}
+let armed=false;
+function render(){settle();const a=document.getElementById('app');
+ a.innerHTML=location.hash==='#streak'?streak():home();
+ a.querySelectorAll('.box').forEach(b=>b.onclick=()=>tick(b.dataset.id));
+ const rs=document.getElementById('reset');
+ if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{}};save();render()}
+ const bs=document.getElementById('bshow'),br=document.getElementById('brest'),bk=document.getElementById('bk');
+ if(bs){bs.onclick=()=>{bk.value=JSON.stringify(S);bk.select()};br.onclick=()=>{try{const x=JSON.parse(bk.value);if(x&&x.log){S=x;save();render()}}catch(e){bk.value='Invalid backup text'}}}}
+window.addEventListener('hashchange',render);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+load();render();setInterval(()=>{if(!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
+</script>
+</body>
+</html>
