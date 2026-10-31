@@ -53,10 +53,20 @@ summary{cursor:pointer;font-weight:700}
 .chart{max-height:360px;overflow:auto;margin-top:8px}
 .chart div{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .chart b{flex:none;width:76px}
+.q{font:600 17px/1.4 Georgia,serif;margin:6px 0 12px}
+.opt{display:flex;gap:10px;width:100%;text-align:left;margin-bottom:8px;padding:12px;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;cursor:pointer}
+.opt.sel{border-color:var(--ac);background:var(--soft)}
+.row{display:flex;gap:8px;margin:10px 0}
+.pal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.pn{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.pn.a{background:var(--soft);font-weight:700}.pn.c{outline:3px solid var(--ac)}
+.trow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
 <main id="app"></main>
+<script src="tests.js"></script>
 <script>
 const KEY='boardstreak_v2',GOAL=300,N=81,ST=new Date(2026,10,1);
 const P=['T:Diagnostic basics: arithmetic, science concepts, reading','Maths: Real Numbers','Science: Chemical Reactions and Equations','SST: History: Rise of Nationalism in Europe','Maths: Polynomials','English: A Letter to God','Science: Acids, Bases and Salts','T:Science',
@@ -93,11 +103,11 @@ function tasks(i){const c=P[i];
  {id:2,s:'19:00',e:'19:45',t:'Homework: school + tuition',n:'45 min'},
  {id:3,s:'19:45',e:'20:30',t:'Study: '+c,n:'20 min learn · 15 min NCERT · 10 min quiz'},
  {id:4,s:'20:30',e:'21:00',t:'PYQs: '+c,n:'3 to 6 questions'}]}
-function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}if(!S||!S.log)S={log:{}}}
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}if(!S||!S.log)S={log:{}};S.tests=S.tests||{}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function settle(){const ni=nowIdx(),nm=nowM();
  for(let i=0;i<=Math.min(ni,N-1);i++){const k=ds(dOf(i));S.log[k]=S.log[k]||{};
-  tasks(i).forEach(t=>{if(S.log[k][t.id])return;if(i<ni||toM(t.e)<nm)S.log[k][t.id]='miss'})}
+  tasks(i).forEach(t=>{if(S.log[k][t.id])return;if(t.id===1&&S.cur&&!S.cur.late&&S.cur.n===i/7+1)return;if(i<ni||toM(t.e)<nm)S.log[k][t.id]='miss'})}
  save()}
 function dayStatus(i){const l=S.log[ds(dOf(i))]||{},v=tasks(i).map(t=>l[t.id]);
  if(v.includes('miss'))return'x';if(v.every(x=>x==='done'))return'ok';return i===nowIdx()?'part':'x'}
@@ -108,7 +118,7 @@ function runs(){let cur=0,best=0;
  for(let i=0;i<=Math.min(nowIdx(),N-1);i++){const s=dayStatus(i);
   if(s==='ok'){cur++;best=Math.max(best,cur)}else if(s==='x')cur=0}
  return{cur,best}}
-function badges(t,r){return[
+function badges(t,r){const TR=Object.values(S.tests||{});return[
 ['🌱','First tick','Finish 1 task on time',t.done>=1],
 ['✏️','25 on time','25 ticks before deadline',t.done>=25],
 ['📚','100 on time','100 ticks before deadline',t.done>=100],
@@ -118,7 +128,8 @@ function badges(t,r){return[
 ['💎','21-day streak','21 perfect days in a row',r.best>=21],
 ['👑','50-day streak','50 perfect days in a row',r.best>=50],
 ['🎯','Halfway','Reach half the points goal',t.score>=GOAL/2],
-['🏆','95% club','Reach the full points goal',t.score>=GOAL]]}
+['🏆','95% club','Reach the full points goal',t.score>=GOAL],
+['📝','First test','Submit your first weekly test',TR.length>=1],['⭐','Strong 21+','Score 21 or more in a test',TR.some(x=>x.score>=21)],['💯','Perfect 25','Score 25/25 in a test',TR.some(x=>x.score>=25)],['🎓','All 12 tests','Submit all 12 weekly tests',TR.length>=12]]}
 function tick(id){settle();const i=nowIdx();if(i<0||i>=N)return;
  const k=ds(dOf(i)),t=tasks(i).find(x=>x.id==id),l=S.log[k];
  if(l[id]==='miss'||nowM()>toM(t.e))return;
@@ -129,8 +140,8 @@ function home(){const ni=nowIdx(),i=Math.max(0,Math.min(N-1,ni)),live=ni>=0&&ni<
  const dn=Object.values(l).filter(x=>x==='done').length;
  const banner=ni<0?'Your plan starts on Sun 1 Nov. This is Day 1 as a preview.':ni>=N?'The 81-day plan is finished. This is the last day.':'';
  const list=tasks(i).map(x=>{const st=live?(l[x.id]||''):'';
-  const sub=st==='done'?'Done on time ✅':st==='miss'?'❌ Missed, deadline '+f12(x.e):live?'Finish by '+f12(x.e)+' · '+left(x.e):'Finish by '+f12(x.e);
-  return`<div class="task ${st}"><button class="box" data-id="${x.id}" ${live?'':'disabled'} aria-label="${esc(x.t)}">${st==='done'?'✓':st==='miss'?'❌':''}</button><div class="t"><div class="time">${f12(x.s)} – ${f12(x.e)}</div>${esc(x.t)}<div class="s">${esc(x.n)} · ${sub}</div></div></div>`}).join('');
+  const sub=st==='done'?'Done on time ✅':st==='miss'?'❌ Missed, deadline '+f12(x.e):live?(x.id===1&&P[i].startsWith('T:')&&nowM()<toM(x.s)?'Opens at '+f12(x.s):'Finish by '+f12(x.e)+' · '+left(x.e)):'Finish by '+f12(x.e);
+  return`<div class="task ${st}">${boxHtml(x,i,st,live)}<div class="t"><div class="time">${f12(x.s)} – ${f12(x.e)}</div>${esc(x.t)}<div class="s">${esc(x.n)} · ${sub}</div></div></div>`}).join('');
  const dt=dOf(i).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
  return`<header><a class="btn" href="#streak">🔥 ${r.cur}</a><div><h1>Today’s plan</h1><div class="date">${dt} · Day ${i+1} of ${N}</div></div></header>
  ${banner?`<div class="banner">${banner}</div>`:''}
@@ -148,20 +159,62 @@ function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/
  <b>${pct.toFixed(1)}%</b> of the 95% target<div class="note">Each on-time tick adds 1 point and each missed task removes 1. ${t.score} of ${GOAL} points. The plan has ${N*4} tasks.</div></div>
  <h2>Streak map · 1 Nov to 20 Jan</h2><div class="card"><div class="map">${cells.join('')}</div>
  <div class="note" style="margin-top:10px">Green = all 4 tasks on time · Red = a missed task · Dashed = today in progress</div></div>
- <h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
+ ${testList()}<h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
  <h2>Plan</h2><details class="card"><summary>Chapter for every day</summary><div class="chart">${rows}</div></details>`}
 let armed=false;
-function render(){settle();const a=document.getElementById('app');
- a.innerHTML=location.hash==='#streak'?streak():home();
- a.querySelectorAll('.box').forEach(b=>b.onclick=()=>tick(b.dataset.id));
+const mmss=ms=>{const m=Math.floor(ms/60000),c=Math.floor(ms%60000/1000);return pad(m)+':'+pad(c)};
+function boxHtml(x,i,st,live){
+ if(x.id===1&&P[i].startsWith('T:')){const n=i/7+1,r=S.tests[n],wait=live&&!r&&nowM()<toM(x.s)&&!(S.cur&&S.cur.n===n);
+  return`<button class="box" data-open="${n}" ${(live&&!wait)||r?'':'disabled'} aria-label="Open test ${n}">${r?'✓':st==='miss'?'❌':wait?'🔒':'📝'}</button>`}
+ return`<button class="box" data-id="${x.id}" ${live?'':'disabled'} aria-label="${esc(x.t)}">${st==='done'?'✓':st==='miss'?'❌':''}</button>`}
+function openTest(n){const i=(n-1)*7,ni=nowIdx();
+ if(S.tests[n]){location.hash='#results-'+n;return}
+ if(S.cur){location.hash='#test';return}
+ if(ni<i||(ni===i&&nowM()<toM('18:30')))return;
+ const live=ni===i&&nowM()<=toM('19:30');
+ S.cur={n,start:Date.now(),ans:[],i:0,late:!live};save();location.hash='#test'}
+function submit(){const c=S.cur;if(!c)return;const T=TESTS[c.n-1];let sc=0;
+ T.q.forEach((q,j)=>{if(c.ans[j]===q.a)sc++});
+ S.tests[c.n]={score:sc,ans:T.q.map((_,j)=>c.ans[j]==null?null:c.ans[j]),secs:Math.min(3600,Math.round((Date.now()-c.start)/1000)),late:c.late,at:Date.now()};
+ if(!c.late){const k=ds(dOf((c.n-1)*7));S.log[k]=S.log[k]||{};S.log[k][1]='done'}
+ S.cur=null;save();clearInterval(tm);location.hash='#results-'+c.n;render()}
+function pick(j){S.cur.ans[S.cur.i]=j;save();render()}
+function go(d){S.cur.i+=d;save();render()}
+function jump(j){S.cur.i=j;save();render()}
+let tm=null;
+function testView(){const c=S.cur;if(!c){location.hash='#streak';return''}
+ const T=TESTS[c.n-1],q=T.q[c.i],last=c.i===T.q.length-1,un=T.q.filter((_,j)=>c.ans[j]==null).length;
+ clearInterval(tm);tm=setInterval(()=>{const e=document.getElementById('tmr');if(!e){clearInterval(tm);return}const l=c.start+3600000-Date.now();if(l<=0){clearInterval(tm);submit();return}e.textContent=mmss(l)},1000);
+ return`<header><a class="btn" href="#home">← Exit</a><div><h1>Test ${c.n} · ${esc(T.sub)}</h1><div class="date">${c.late?'Late attempt, no streak points · ':''}Time left <b id="tmr">${mmss(Math.max(0,c.start+3600000-Date.now()))}</b></div></div></header>
+ <div class="card"><div class="note">Question ${c.i+1} of ${T.q.length}</div><div class="q">${esc(q.t)}</div>
+ ${q.o.map((o,j)=>`<button class="opt ${c.ans[c.i]===j?'sel':''}" onclick="pick(${j})"><b>${'ABCD'[j]}</b> ${esc(o)}</button>`).join('')}</div>
+ <div class="row"><button class="btn" onclick="go(-1)" ${c.i?'':'disabled'}>← Prev</button><button class="btn" onclick="go(1)" ${last?'disabled':''}>Next →</button></div>
+ <div class="pal">${T.q.map((_,j)=>`<button class="pn ${c.ans[j]!=null?'a':''} ${j===c.i?'c':''}" onclick="jump(${j})">${j+1}</button>`).join('')}</div>
+ ${last?`<div class="card" style="margin-top:12px"><div class="note">${un?un+' unanswered. ':'All answered. '}Answers cannot be changed after you submit.</div><div class="row"><button class="btn" onclick="submit()">Submit test</button></div></div>`:''}`}
+function resultView(n){const r=S.tests[n],T=TESTS[n-1];
+ if(!r)return'<header><a class="btn" href="#streak">← Streak</a></header><div class="card">No result yet.</div>';
+ const lab=r.score<15?'Weak: relearn within 3 days':r.score<21?'Developing: do extra PYQs':'Strong: revise again after 7 days';
+ const w=T.q.map((q,j)=>({q,j,a:r.ans[j]})).filter(x=>x.a!==x.q.a),sk=w.filter(x=>x.a==null).length;
+ return`<header><a class="btn" href="#streak">← Streak</a><div><h1>Test ${n} result</h1><div class="date">${esc(T.sub)} · ${T.date}${r.late?' · late attempt':''}</div></div></header>
+ <div class="card"><div class="big">${r.score}/25</div><div class="date">${lab}</div><div class="note">${25-w.length} correct · ${w.length-sk} wrong · ${sk} skipped · ${Math.max(1,Math.round(r.secs/60))} min</div></div>
+ <h2>Mistakes (${w.length})</h2>${w.map(x=>`<div class="card" style="margin-bottom:8px"><div class="note">Q${x.j+1}</div><div class="q">${esc(x.q.t)}</div><div class="s" style="color:var(--no)">Your answer: ${x.a==null?'Not answered':'ABCD'[x.a]+') '+esc(x.q.o[x.a])}</div><div class="s" style="color:var(--ok)">Correct: ${'ABCD'[x.q.a]}) ${esc(x.q.o[x.q.a])}</div></div>`).join('')||'<div class="card">No mistakes. Perfect score!</div>'}
+ <div class="note">Write each mistake with the correct concept. Retest these after 3 days and again after 1 week.</div>`}
+function testList(){const ni=nowIdx(),R=Object.values(S.tests),avg=R.length?(R.reduce((a,b)=>a+b.score,0)/R.length).toFixed(1):'–';
+ return`<h2>Weekly tests · average ${avg}/25</h2><div class="card">`+TESTS.map(T=>{const i=(T.n-1)*7,r=S.tests[T.n],lock=ni<i||(ni===i&&nowM()<toM('18:30')),ip=S.cur&&S.cur.n===T.n;
+  const st=r?`<b>${r.score}/25</b>${r.late?' (late attempt)':''}`:ip?'In progress':lock?'🔒 Opens '+dOf(i).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+', 6:30 PM':ni===i?'📝 Open now':'Missed · tap to take it late';
+  return`<div class="trow"><button class="btn" ${lock&&!r?'disabled':''} onclick="openTest(${T.n})">${r?'Result':ip?'Continue':lock?'🔒':'Open'}</button><div><b>Test ${T.n} · ${esc(T.sub)}</b><div class="s">${st}</div></div></div>`}).join('')+'</div>'}
+
+function render(){if(S.cur&&Date.now()>=S.cur.start+3600000){submit();return}settle();const a=document.getElementById('app'),h=location.hash;
+ a.innerHTML=h==='#streak'?streak():h==='#test'?testView():h.startsWith('#results-')?resultView(+h.slice(9)):home();
+ a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));
  const rs=document.getElementById('reset');
- if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{}};save();render()}
+ if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{},tests:{}};save();render()}
  const bs=document.getElementById('bshow'),br=document.getElementById('brest'),bk=document.getElementById('bk');
- if(bs){bs.onclick=()=>{bk.value=JSON.stringify(S);bk.select()};br.onclick=()=>{try{const x=JSON.parse(bk.value);if(x&&x.log){S=x;save();render()}}catch(e){bk.value='Invalid backup text'}}}}
+ if(bs){bs.onclick=()=>{bk.value=JSON.stringify(S);bk.select()};br.onclick=()=>{try{const x=JSON.parse(bk.value);if(x&&x.log){S=x;S.tests=S.tests||{};save();render()}}catch(e){bk.value='Invalid backup text'}}}}
 window.addEventListener('hashchange',render);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
-load();render();setInterval(()=>{if(!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
+load();render();setInterval(()=>{if(location.hash!=='#test'&&!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
 </script>
 </body>
 </html>
