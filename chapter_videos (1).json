@@ -1,0 +1,661 @@
+{
+  "schema_version": "2.0",
+  "app": "Board Streak",
+  "description": "Chapter-wise video data. Only direct, chapter-specific YouTube watch links found in the research are populated. null means no direct video URL was verified; it is intentionally not a YouTube search page.",
+  "url_policy": {
+    "youtube_url": "Direct https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID only",
+    "embed_url": "Generated from the verified video ID for an in-app YouTube iframe",
+    "unverified": "youtube_url, embed_url, video_title and channel are null; do not attempt to embed"
+  },
+  "subjects": [
+    {
+      "subject_id": "maths",
+      "subject_name": "Mathematics",
+      "chapters": [
+        {
+          "chapter_id": "maths_01",
+          "chapter_name": "Real Numbers",
+          "video_status": "verified_direct_video",
+          "video_title": "Real Numbers class 10 maths || Chapter 1 || Oneshot Complete",
+          "channel": "Shobhit Nirwan",
+          "youtube_url": "https://www.youtube.com/watch?v=EKBWFK_avFU",
+          "embed_url": "https://www.youtube.com/embed/EKBWFK_avFU",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_02",
+          "chapter_name": "Polynomials",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "maths_03",
+          "chapter_name": "Pair of Linear Equations",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "maths_04",
+          "chapter_name": "Quadratic Equations",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "maths_05",
+          "chapter_name": "Arithmetic Progressions",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "maths_06",
+          "chapter_name": "Triangles",
+          "video_status": "verified_direct_video",
+          "video_title": "Triangles Class 10 full chapter",
+          "channel": "Next Toppers / Shobhit Bhaiya",
+          "youtube_url": "https://www.youtube.com/watch?v=YyzBDDmQtIY",
+          "embed_url": "https://www.youtube.com/embed/YyzBDDmQtIY",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_07",
+          "chapter_name": "Coordinate Geometry",
+          "video_status": "verified_direct_video",
+          "video_title": "Coordinate Geometry Class 10",
+          "channel": "Maths By Shobhit Nirwan",
+          "youtube_url": "https://www.youtube.com/watch?v=-DQk_5TnN_k",
+          "embed_url": "https://www.youtube.com/embed/-DQk_5TnN_k",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_08",
+          "chapter_name": "Introduction to Trigonometry",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "maths_09",
+          "chapter_name": "Applications of Trigonometry",
+          "video_status": "verified_direct_video",
+          "video_title": "Applications of Trigonometry Class 10 full chapter",
+          "channel": "Shobhit Nirwan",
+          "youtube_url": "https://www.youtube.com/watch?v=gjJnhmOSkPg",
+          "embed_url": "https://www.youtube.com/embed/gjJnhmOSkPg",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_10",
+          "chapter_name": "Circles",
+          "video_status": "verified_direct_video",
+          "video_title": "Circles Class 10 full chapter",
+          "channel": "Shobhit & Ashu Live",
+          "youtube_url": "https://www.youtube.com/watch?v=N-JUIspo-UU",
+          "embed_url": "https://www.youtube.com/embed/N-JUIspo-UU",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_11",
+          "chapter_name": "Areas Related to Circles",
+          "video_status": "verified_direct_video",
+          "video_title": "Areas Related to Circles Class 10 full chapter",
+          "channel": "Shobhit & Ashu Live",
+          "youtube_url": "https://www.youtube.com/watch?v=R5eKMoPo_PI",
+          "embed_url": "https://www.youtube.com/embed/R5eKMoPo_PI",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "maths_12",
+          "chapter_name": "Probability",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    },
+    {
+      "subject_id": "science",
+      "subject_name": "Science",
+      "chapters": [
+        {
+          "chapter_id": "science_01",
+          "chapter_name": "Chemical Reactions and Equations",
+          "video_status": "verified_direct_video",
+          "video_title": "Chemical Reactions and Equations Class 10 full lesson",
+          "channel": "Prashant Kirad",
+          "youtube_url": "https://www.youtube.com/watch?v=gQ-X9wV8TXQ",
+          "embed_url": "https://www.youtube.com/embed/gQ-X9wV8TXQ",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "science_02",
+          "chapter_name": "Acids, Bases and Salts",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_03",
+          "chapter_name": "Metals and Non-metals",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_04",
+          "chapter_name": "Carbon and its Compounds",
+          "video_status": "verified_direct_video",
+          "video_title": "Carbon and its Compounds Class 10 full chapter explanation",
+          "channel": "CBSE Guidance",
+          "youtube_url": "https://www.youtube.com/watch?v=nTC3I2FEhng",
+          "embed_url": "https://www.youtube.com/embed/nTC3I2FEhng",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "science_05",
+          "chapter_name": "Life Processes",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_06",
+          "chapter_name": "Control and Coordination",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_07",
+          "chapter_name": "How Do Organisms Reproduce?",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_08",
+          "chapter_name": "Heredity",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_09",
+          "chapter_name": "Electricity",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "science_10",
+          "chapter_name": "Magnetic Effects of Electric Current",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    },
+    {
+      "subject_id": "social_science",
+      "subject_name": "Social Science",
+      "chapters": [
+        {
+          "chapter_id": "social_science_01",
+          "chapter_name": "The Rise of Nationalism in Europe",
+          "video_status": "verified_direct_video",
+          "video_title": "The Rise of Nationalism in Europe Class 10",
+          "channel": "Digraj Singh Rajput",
+          "youtube_url": "https://www.youtube.com/watch?v=JXeryAV8JNE",
+          "embed_url": "https://www.youtube.com/embed/JXeryAV8JNE",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "social_science_02",
+          "chapter_name": "Nationalism in India",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_03",
+          "chapter_name": "The Making of a Global World",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_04",
+          "chapter_name": "Print Culture and the Modern World",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_05",
+          "chapter_name": "Resources and Development",
+          "video_status": "verified_direct_video",
+          "video_title": "Resources and Development Class 10",
+          "channel": "Digraj Singh Rajput",
+          "youtube_url": "https://www.youtube.com/watch?v=Cq5ULsLLItY",
+          "embed_url": "https://www.youtube.com/embed/Cq5ULsLLItY",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "social_science_06",
+          "chapter_name": "Forest and Wildlife Resources",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_07",
+          "chapter_name": "Water Resources",
+          "video_status": "verified_direct_video",
+          "video_title": "Water Resources Class 10 complete explanation",
+          "channel": "CBSE Guidance",
+          "youtube_url": "https://youtu.be/9p_TaPhlelg",
+          "embed_url": "https://www.youtube.com/embed/9p_TaPhlelg",
+          "verification_note": "Specific chapter video link verified from search result."
+        },
+        {
+          "chapter_id": "social_science_08",
+          "chapter_name": "Manufacturing Industries",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_09",
+          "chapter_name": "Lifelines of National Economy",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_10",
+          "chapter_name": "Power Sharing",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_11",
+          "chapter_name": "Outcomes of Democracy",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_12",
+          "chapter_name": "Development",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "social_science_13",
+          "chapter_name": "Sectors of the Indian Economy",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    },
+    {
+      "subject_id": "english",
+      "subject_name": "English Language and Literature",
+      "chapters": [
+        {
+          "chapter_id": "english_01",
+          "chapter_name": "A Letter to God",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_02",
+          "chapter_name": "Nelson Mandela: Long Walk to Freedom",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_03",
+          "chapter_name": "Two Stories about Flying",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_04",
+          "chapter_name": "From the Diary of Anne Frank",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_05",
+          "chapter_name": "Glimpses of India",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_06",
+          "chapter_name": "The Sermon at Benares",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_07",
+          "chapter_name": "The Ball Poem",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_08",
+          "chapter_name": "Amanda!",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_09",
+          "chapter_name": "The Trees / Fog",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "english_10",
+          "chapter_name": "The Tale of Custard the Dragon / For Anne Gregory",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    },
+    {
+      "subject_id": "hindi_course_a",
+      "subject_name": "Hindi Course A",
+      "chapters": [
+        {
+          "chapter_id": "hindi_course_a_01",
+          "chapter_name": "Surdas – Pad",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_02",
+          "chapter_name": "Tulsidas – Ram-Lakshman-Parshuram Samvad",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_03",
+          "chapter_name": "Jayashankar Prasad – Atmakathya",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_04",
+          "chapter_name": "Nirala – Utsah / At Nahi Rahi Hai",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_05",
+          "chapter_name": "Nagarjun – Yah Danturit Muskan / Fasal",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_06",
+          "chapter_name": "Balgobin Bhagat",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_07",
+          "chapter_name": "Sanskriti",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "hindi_course_a_08",
+          "chapter_name": "Mata ka Anchal",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    },
+    {
+      "subject_id": "it_402",
+      "subject_name": "Information Technology (402)",
+      "chapters": [
+        {
+          "chapter_id": "it_402_01",
+          "chapter_name": "Communication Skills-II",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_02",
+          "chapter_name": "Self-Management Skills-II",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_03",
+          "chapter_name": "ICT Skills-II",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_04",
+          "chapter_name": "Entrepreneurial Skills-II",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_05",
+          "chapter_name": "Green Skills-II",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_06",
+          "chapter_name": "Electronic Spreadsheet (Advanced): Scenarios / Goal Seek",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_07",
+          "chapter_name": "IT Practical: Writer + Calc",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        },
+        {
+          "chapter_id": "it_402_08",
+          "chapter_name": "Healthy, Safe and Secure Working Environment",
+          "video_status": "not_verified",
+          "video_title": null,
+          "channel": null,
+          "youtube_url": null,
+          "embed_url": null,
+          "verification_note": "No specific direct video URL verified in this data build. Do not replace with a YouTube search-results URL."
+        }
+      ]
+    }
+  ],
+  "chapter_count": 61,
+  "verified_video_count": 11,
+  "unverified_video_count": 50
+}
