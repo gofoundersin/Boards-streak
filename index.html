@@ -291,7 +291,7 @@ function testList(){const ni=nowIdx(),R=Object.values(S.tests),avg=R.length?(R.r
 function render(){if(S.cur&&Date.now()>=S.cur.start+3600000){submit();return}if(S.dcur&&Date.now()>=S.dcur.start+1800000){dSubmit();return}settle();const a=document.getElementById('app'),h=location.hash;
  if(h==='#lesson'){lessonShell(a);return}a.dataset.les='';
  a.innerHTML=h==='#streak'?streak():h==='#test'?testView():h==='#daily'?dailyView():h.startsWith('#dresult-')?dResult(+h.slice(9)):h.startsWith('#results-')?resultView(+h.slice(9)):home();
- a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.daily?openDaily(+b.dataset.daily):b.dataset.lesson?openLesson(+b.dataset.day,+b.dataset.lesson):b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));
+ a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.daily?openDaily(+b.dataset.daily):b.dataset.lesson?openLesson(+b.dataset.day,+b.dataset.lesson):b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 load();render();setInterval(()=>{if(location.hash!=='#test'&&location.hash!=='#lesson'&&location.hash!=='#daily'&&!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
