@@ -63,6 +63,8 @@ summary{cursor:pointer;font-weight:700}
 .trow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .opt.ok{border-color:var(--ok);background:rgba(31,157,85,.16)}.opt.bad{border-color:var(--no);background:rgba(217,54,54,.14)}.opt:disabled{cursor:default;color:var(--tx)}
+.vwrap{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:8px}
+.vwrap.small{width:50%;margin-left:auto}.vwrap iframe{width:100%;height:100%;border:0}
 .task.weak{border-color:#f4c20d}.weak .box{background:#f4c20d;border-color:#f4c20d;color:#14213d}
 .d.y{background:#f4c20d;color:#14213d}
 </style>
@@ -221,8 +223,13 @@ function lessonShell(a){const L=S.les;if(!L){location.hash='#home';return}
  const key=L.id+'|'+L.i+'|'+L.tid;
  if(a.dataset.les!==key||!document.getElementById('lq')){a.dataset.les=key;
   const c=CH[L.id],t=tasks(L.i).find(x=>x.id==L.tid);
-  a.innerHTML=`<header><a class="btn" href="#home">← Home</a><div><h1>${esc(c.n)}</h1><div class="date">${esc(t.t.split(':')[0])} · ${f12(t.s)} – ${f12(t.e)}</div></div></header><div class="card" style="margin-bottom:10px">Study this chapter using your textbook or notes, then solve the questions below.</div><div id="lq"></div>`}
+  const vid=c.v?`<div class="vwrap ${L.big?'':'small'}" id="vw"><iframe src="https://www.youtube.com/embed/${c.v}?playsinline=1&rel=0" title="${esc(c.t||c.n)}" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+  <div class="row" style="flex-wrap:wrap"><button class="btn" id="vs" onclick="vsize()">${L.big?'Small video':'Big video'}</button><button class="btn" onclick="vfull()">⛶ Full screen</button><a class="btn" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=${c.v}">Open in YouTube</a></div>`
+  :`<div class="card" style="margin-bottom:10px">Video link is not available. Study this chapter yourself, then solve the questions below.</div>`;
+  a.innerHTML=`<header><a class="btn" href="#home">← Home</a><div><h1>${esc(c.n)}</h1><div class="date">${esc(t.t.split(':')[0])} · ${f12(t.s)} – ${f12(t.e)}</div></div></header>${vid}<div id="lq"></div>`}
  renderQ()}
+function vsize(){const L=S.les,w=document.getElementById('vw');L.big=!L.big;w.classList.toggle('small',!L.big);document.getElementById('vs').textContent=L.big?'Small video':'Big video';save()}
+function vfull(){const f=document.querySelector('#vw iframe');try{(f.requestFullscreen||f.webkitRequestFullscreen).call(f)}catch(e){}}
 function renderQ(){const L=S.les,q=document.getElementById('lq');if(!q)return;
  const Q=window.QA&&QA[L.id]?QA[L.id].q:null;
  if(!Q){q.innerHTML=`<div class="card">Questions for this chapter are coming soon.</div>${L.score?'<div class="row"><button class="btn" onclick="lMark()">Mark as done</button></div>':''}`;return}
