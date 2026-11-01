@@ -62,11 +62,22 @@ summary{cursor:pointer;font-weight:700}
 .pn.a{background:var(--soft);font-weight:700}.pn.c{outline:3px solid var(--ac)}
 .trow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
+.opt.ok{border-color:var(--ok);background:rgba(31,157,85,.16)}.opt.bad{border-color:var(--no);background:rgba(217,54,54,.14)}.opt:disabled{cursor:default;color:var(--tx)}
+.task.weak{border-color:#f4c20d}.weak .box{background:#f4c20d;border-color:#f4c20d;color:#14213d}
+.d.y{background:#f4c20d;color:#14213d}
 </style>
 </head>
 <body>
 <main id="app"></main>
 <script src="tests.js"></script>
+<script src="lessons.js"></script>
+<script src="dailytests.js"></script>
+<script src="qa-maths.js"></script>
+<script src="qa-science.js"></script>
+<script src="qa-social.js"></script>
+<script src="qa-english.js"></script>
+<script src="qa-hindi.js"></script>
+<script src="qa-it.js"></script>
 <script>
 const KEY='boardstreak_v2',GOAL=300,N=81,ST=new Date(2026,10,1);
 const P=['T:Diagnostic basics: arithmetic, science concepts, reading','Maths: Real Numbers','Science: Chemical Reactions and Equations','SST: History: Rise of Nationalism in Europe','Maths: Polynomials','English: A Letter to God','Science: Acids, Bases and Salts','T:Science',
@@ -99,20 +110,20 @@ function tasks(i){const c=P[i];
  {id:3,s:'20:00',e:'20:45',t:'School homework',n:'45 min'},
  {id:4,s:'20:45',e:'21:00',t:'Backlog: missed PYQs',n:'15 min'}];
  return[
- {id:1,s:'18:30',e:'19:00',t:'Recall: '+recall(i),n:'30 min'},
+ {id:1,s:'18:30',e:'19:00',t:'Recall: '+recall(i),n:'30 min',ch:i===1?null:recall(i)},
  {id:2,s:'19:00',e:'19:45',t:'Homework: school + tuition',n:'45 min'},
- {id:3,s:'19:45',e:'20:30',t:'Study: '+c,n:'20 min learn · 15 min NCERT · 10 min quiz'},
- {id:4,s:'20:30',e:'21:00',t:'PYQs: '+c,n:'3 to 6 questions'}]}
-function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}if(!S||!S.log)S={log:{}};S.tests=S.tests||{}}
+ {id:3,s:'19:45',e:'20:30',t:'Study: '+c,n:'20 min learn · 15 min NCERT · 10 min quiz',ch:c},
+ {id:4,s:'20:30',e:'21:00',t:'Daily test (15 marks): '+c,n:'30 min · 3 MCQ + written, mark yourself',dt:DM[ds(dOf(i))]}]}
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}if(!S||!S.log)S={log:{}};S.tests=S.tests||{};S.dts=S.dts||{}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function settle(){const ni=nowIdx(),nm=nowM();
  for(let i=0;i<=Math.min(ni,N-1);i++){const k=ds(dOf(i));S.log[k]=S.log[k]||{};
-  tasks(i).forEach(t=>{if(S.log[k][t.id])return;if(t.id===1&&S.cur&&!S.cur.late&&S.cur.n===i/7+1)return;if(i<ni||toM(t.e)<nm)S.log[k][t.id]='miss'})}
+  tasks(i).forEach(t=>{if(S.log[k][t.id])return;if(t.id===1&&S.cur&&!S.cur.late&&S.cur.n===i/7+1)return;if(t.dt&&S.dcur&&!S.dcur.late&&S.dcur.n===t.dt)return;if(i<ni||toM(t.e)<nm)S.log[k][t.id]='miss'})}
  save()}
 function dayStatus(i){const l=S.log[ds(dOf(i))]||{},v=tasks(i).map(t=>l[t.id]);
- if(v.includes('miss'))return'x';if(v.every(x=>x==='done'))return'ok';return i===nowIdx()?'part':'x'}
+ if(v.includes('miss'))return'x';if(v.includes('weak'))return'y';if(v.every(x=>x==='done'))return'ok';return i===nowIdx()?'part':'x'}
 function totals(){let score=0,done=0,miss=0;
- Object.keys(S.log).sort().forEach(k=>Object.values(S.log[k]).forEach(v=>{if(v==='done'){done++;score++}else{miss++;score=Math.max(0,score-1)}}));
+ Object.keys(S.log).sort().forEach(k=>Object.values(S.log[k]).forEach(v=>{if(v==='done'){done++;score++}else if(v==='miss'){miss++;score=Math.max(0,score-1)}}));
  return{score,done,miss}}
 function runs(){let cur=0,best=0;
  for(let i=0;i<=Math.min(nowIdx(),N-1);i++){const s=dayStatus(i);
@@ -129,7 +140,7 @@ function badges(t,r){const TR=Object.values(S.tests||{});return[
 ['👑','50-day streak','50 perfect days in a row',r.best>=50],
 ['🎯','Halfway','Reach half the points goal',t.score>=GOAL/2],
 ['🏆','95% club','Reach the full points goal',t.score>=GOAL],
-['📝','First test','Submit your first weekly test',TR.length>=1],['⭐','Strong 21+','Score 21 or more in a test',TR.some(x=>x.score>=21)],['💯','Perfect 25','Score 25/25 in a test',TR.some(x=>x.score>=25)],['🎓','All 12 tests','Submit all 12 weekly tests',TR.length>=12]]}
+['📝','First test','Submit your first weekly test',TR.length>=1],['⭐','Strong 21+','Score 21 or more in a test',TR.some(x=>x.score>=21)],['💯','Perfect 25','Score 25/25 in a test',TR.some(x=>x.score>=25)],['🎓','All 12 tests','Submit all 12 weekly tests',TR.length>=12],['📓','10 daily tests','Submit 10 daily tests',Object.keys(S.dts||{}).length>=10]]}
 function tick(id){settle();const i=nowIdx();if(i<0||i>=N)return;
  const k=ds(dOf(i)),t=tasks(i).find(x=>x.id==id),l=S.log[k];
  if(l[id]==='miss'||nowM()>toM(t.e))return;
@@ -140,14 +151,14 @@ function home(){const ni=nowIdx(),i=Math.max(0,Math.min(N-1,ni)),live=ni>=0&&ni<
  const dn=Object.values(l).filter(x=>x==='done').length;
  const banner=ni<0?'Your plan starts on Sun 1 Nov. This is Day 1 as a preview.':ni>=N?'The 81-day plan is finished. This is the last day.':'';
  const list=tasks(i).map(x=>{const st=live?(l[x.id]||''):'';
-  const sub=st==='done'?'Done on time ✅':st==='miss'?'❌ Missed, deadline '+f12(x.e):live?(x.id===1&&P[i].startsWith('T:')&&nowM()<toM(x.s)?'Opens at '+f12(x.s):'Finish by '+f12(x.e)+' · '+left(x.e)):'Finish by '+f12(x.e);
+  const sub=st==='done'?'Done on time ✅':st==='miss'?'❌ Missed, deadline '+f12(x.e):st==='weak'?'🟡 Ticked, under 80%. Open it to solve again.':live?(x.id===1&&P[i].startsWith('T:')&&nowM()<toM(x.s)?'Opens at '+f12(x.s):'Finish by '+f12(x.e)+' · '+left(x.e)):'Finish by '+f12(x.e);
   return`<div class="task ${st}">${boxHtml(x,i,st,live)}<div class="t"><div class="time">${f12(x.s)} – ${f12(x.e)}</div>${esc(x.t)}<div class="s">${esc(x.n)} · ${sub}</div></div></div>`}).join('');
  const dt=dOf(i).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
  return`<header><a class="btn" href="#streak">🔥 ${r.cur}</a><div><h1>Today’s plan</h1><div class="date">${dt} · Day ${i+1} of ${N}</div></div></header>
  ${banner?`<div class="banner">${banner}</div>`:''}
  <div class="stats"><div class="stat"><b>${dn}/4</b><span>done today</span></div><div class="stat"><b>${t.score}</b><span>streak points</span></div><div class="stat"><b>${r.cur}</b><span>day streak</span></div></div>
- ${list}
- <h2>Settings</h2><div class="card"><p class="note">Backup keeps your streak safe if browser data is cleared. Tap Show backup, copy the text and save it in a note. To restore, paste it here and tap Restore.</p><textarea id="bk" style="width:100%;min-height:70px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="bshow">Show backup</button><button class="btn" id="brest">Restore</button><button class="btn" id="reset">Reset all progress</button></div></div>`}
+ ${weakBox()}${list}
+ <h2>Settings</h2><div class="card"><button class="btn" id="reset">Reset all progress</button></div>`}
 function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/GOAL*95);
  const cells=['S','M','T','W','T','F','S'].map(x=>`<div class="wd">${x}</div>`);
  for(let i=0;i<N;i++){const s=i<=ni?dayStatus(i):'';cells.push(`<div class="d ${s} ${i===ni?'today':''}" title="Day ${i+1}">${dOf(i).getDate()}</div>`)}
@@ -158,12 +169,80 @@ function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/
  <h2>Path to 95% in boards</h2><div class="card"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="95" aria-valuenow="${pct.toFixed(1)}"><i style="width:${pct/95*100}%"></i></div>
  <b>${pct.toFixed(1)}%</b> of the 95% target<div class="note">Each on-time tick adds 1 point and each missed task removes 1. ${t.score} of ${GOAL} points. The plan has ${N*4} tasks.</div></div>
  <h2>Streak map · 1 Nov to 20 Jan</h2><div class="card"><div class="map">${cells.join('')}</div>
- <div class="note" style="margin-top:10px">Green = all 4 tasks on time · Red = a missed task · Dashed = today in progress</div></div>
- ${testList()}<h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
+ <div class="note" style="margin-top:10px">Green = all 4 tasks on time · Yellow = ticked but under 80%, solve again · Red = a missed task · Dashed = today</div></div>
+ ${testList()}${dailyList()}<h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
  <h2>Plan</h2><details class="card"><summary>Chapter for every day</summary><div class="chart">${rows}</div></details>`}
 let armed=false;
+const DM={};(window.DT||[]).forEach(d=>DM[d.date]=d.n);
+const dIdx=n=>Math.round((new Date(DT[n-1].date+'T00:00')-ST)/864e5);
+function openDaily(n){const i=dIdx(n),ni=nowIdx();
+ if(S.dts[n]){location.hash='#dresult-'+n;return}
+ if(S.dcur){location.hash='#daily';return}
+ if(ni<i||(ni===i&&nowM()<toM('20:30')))return;
+ const live=ni===i&&nowM()<=toM('21:00');
+ S.dcur={n,start:Date.now(),a:[],i:0,late:!live};save();location.hash='#daily'}
+function dSubmit(){const c=S.dcur;if(!c)return;const D=DT[c.n-1];let m=0;
+ D.mcq.forEach((q,j)=>{if(c.a[j]===q.a)m++});
+ S.dts[c.n]={m,a:D.mcq.map((_,j)=>c.a[j]==null?null:c.a[j]),w:[null,null,null,null],secs:Math.min(1800,Math.round((Date.now()-c.start)/1000)),late:c.late};
+ if(!c.late){S.log[D.date]=S.log[D.date]||{};S.log[D.date][4]='done'}
+ S.dcur=null;save();clearInterval(tm);location.hash='#dresult-'+c.n;render()}
+function dPick(j){S.dcur.a[S.dcur.i]=j;save();render()}
+function dGo(d){S.dcur.i+=d;save();render()}
+function dailyView(){const c=S.dcur;if(!c){location.hash='#home';return''}
+ const D=DT[c.n-1],j=c.i;clearInterval(tm);
+ tm=setInterval(()=>{const e=document.getElementById('tmr');if(!e){clearInterval(tm);return}const l=c.start+1800000-Date.now();if(l<=0){clearInterval(tm);dSubmit();return}e.textContent=mmss(l)},1000);
+ const head=`<header><a class="btn" href="#home">← Exit</a><div><h1>Daily test ${c.n}</h1><div class="date">${esc(D.sub)}: ${esc(D.ch)}<br>${c.late?'Late attempt, no streak point · ':''}Time left <b id="tmr">${mmss(Math.max(0,c.start+1800000-Date.now()))}</b></div></div></header>`;
+ if(j<3){const q=D.mcq[j];
+  return head+`<div class="card"><div class="note">Section A · Question ${j+1} of 3 · 1 mark</div><div class="q">${esc(q.q)}</div>${q.o.map((o,m)=>`<button class="opt ${c.a[j]===m?'sel':''}" onclick="dPick(${m})"><b>${'ABCD'[m]}</b> ${esc(o)}</button>`).join('')}</div>
+  <div class="row"><button class="btn" onclick="dGo(-1)" ${j?'':'disabled'}>← Prev</button><button class="btn" onclick="dGo(1)">${j<2?'Next →':'Written part →'}</button></div>`}
+ return head+`<div class="card"><div class="note">Section B and C: write these answers in your notebook</div>${D.sb.map((q,k)=>`<div class="q">${k+4}. ${esc(q)} <span class="note">(2 marks)</span></div>`).join('')}<div class="q">7. ${esc(D.sc)} <span class="note">(6 marks)</span></div></div>
+ <div class="row"><button class="btn" onclick="dGo(-1)">← Back to MCQs</button></div>
+ <div class="card"><div class="note">Answers stay hidden until you submit. You mark your written answers yourself on the result page.</div><div class="row"><button class="btn" onclick="dSubmit()">Submit test</button></div></div>`}
+function dResult(n){const r=S.dts[n],D=DT[n-1];
+ if(!r)return'<header><a class="btn" href="#streak">← Streak</a></header><div class="card">No result yet.</div>';
+ const W=[[D.sb[0],2,D.g.g45],[D.sb[1],2,D.g.g45],[D.sb[2],2,D.g.g6],[D.sc,6,D.g.g7]],tot=r.m+r.w.reduce((a,b)=>a+(b||0),0);
+ return`<header><a class="btn" href="#streak">← Streak</a><div><h1>Daily test ${n} result</h1><div class="date">${esc(D.sub)}: ${esc(D.ch)}</div></div></header>
+ <div class="card"><div class="big">${tot}/15</div><div class="date">MCQ ${r.m}/3 · Written ${tot-r.m}/12 (marked by you)${r.late?' · late attempt, no streak point':' · counted for your streak ✅'}</div></div>
+ <h2>Section A</h2>${D.mcq.map((q,j)=>`<div class="card" style="margin-bottom:8px"><div class="q">${esc(q.q)}</div><div class="s" style="color:${r.a[j]===q.a?'var(--ok)':'var(--no)'}">Your answer: ${r.a[j]==null?'Not answered':'ABCD'[r.a[j]]+') '+esc(q.o[r.a[j]])}</div>${r.a[j]===q.a?'':`<div class="s" style="color:var(--ok)">Correct: ${'ABCD'[q.a]}) ${esc(q.o[q.a])}</div>`}</div>`).join('')}
+ <h2>Section B and C: mark yourself</h2>${W.map(([q,mx,g],k)=>`<div class="card" style="margin-bottom:8px"><div class="note">Q${k+4} · ${mx} marks</div><div class="q">${esc(q)}</div><div class="s">Marking guide: ${esc(g)}</div><div class="row"><button class="btn" onclick="dMark(${n},${k},-1)">−</button><b style="align-self:center">${r.w[k]==null?'–':r.w[k]}/${mx}</b><button class="btn" onclick="dMark(${n},${k},1)">+</button></div></div>`).join('')}`}
+function dMark(n,k,d){const r=S.dts[n],mx=k<3?2:6;r.w[k]=Math.max(0,Math.min(mx,(r.w[k]||0)+d));save();render()}
+function dailyList(){const ni=nowIdx(),R=Object.values(S.dts),avg=R.length?(R.reduce((a,r)=>a+r.m+r.w.reduce((x,y)=>x+(y||0),0),0)/R.length).toFixed(1):'–';
+ return`<h2>Daily tests · ${R.length}/${DT.length} done · average ${avg}/15</h2><details class="card"><summary>All 69 daily tests</summary>`+DT.map(D=>{const i=dIdx(D.n),r=S.dts[D.n],lock=ni<i||(ni===i&&nowM()<toM('20:30')),ip=S.dcur&&S.dcur.n===D.n;
+  const st=r?`<b>${r.m+r.w.reduce((a,b)=>a+(b||0),0)}/15</b>${r.late?' (late)':''}`:ip?'In progress':lock?'🔒 Opens '+dOf(i).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+', 8:30 PM':ni===i?'📝 Open now':'Missed · tap to take it late';
+  return`<div class="trow"><button class="btn" ${lock&&!r?'disabled':''} onclick="openDaily(${D.n})">${r?'Result':ip?'Continue':lock?'🔒':'Open'}</button><div><b>${D.n}. ${esc(D.sub)}: ${esc(D.ch)}</b><div class="s">${st}</div></div></div>`}).join('')+'</details>'}
+
+function weakBox(){const w=[];Object.keys(S.log).sort().forEach(k=>{const i=Math.round((new Date(k+'T00:00')-ST)/864e5);
+  Object.entries(S.log[k]).forEach(([tid,v])=>{if(v==='weak'){const id=chId((tasks(i).find(x=>x.id==tid)||{}).ch);if(id)w.push({i,tid,id})}})});
+ return w.length?`<div class="banner"><b>Solve again to earn your streak points</b><div class="row" style="flex-wrap:wrap">${w.map(x=>`<button class="btn" onclick="openLesson(${x.i},${x.tid})">🟡 ${esc(CH[x.id].n)} · Day ${x.i+1}</button>`).join('')}</div></div>`:''}
+function openLesson(i,tid){const k=ds(dOf(i)),st=(S.log[k]||{})[tid],t=tasks(i).find(x=>x.id==tid);
+ const score=(nowIdx()===i&&!st&&nowM()<=toM(t.e))||st==='weak';
+ S.les={i,tid,id:chId(t.ch),ans:[],idx:0,score,big:true,r:null,applied:false};save();location.hash='#lesson'}
+function lessonShell(a){const L=S.les;if(!L){location.hash='#home';return}
+ const key=L.id+'|'+L.i+'|'+L.tid;
+ if(a.dataset.les!==key||!document.getElementById('lq')){a.dataset.les=key;
+  const c=CH[L.id],t=tasks(L.i).find(x=>x.id==L.tid);
+  a.innerHTML=`<header><a class="btn" href="#home">← Home</a><div><h1>${esc(c.n)}</h1><div class="date">${esc(t.t.split(':')[0])} · ${f12(t.s)} – ${f12(t.e)}</div></div></header><div class="card" style="margin-bottom:10px">Study this chapter using your textbook or notes, then solve the questions below.</div><div id="lq"></div>`}
+ renderQ()}
+function renderQ(){const L=S.les,q=document.getElementById('lq');if(!q)return;
+ const Q=window.QA&&QA[L.id]?QA[L.id].q:null;
+ if(!Q){q.innerHTML=`<div class="card">Questions for this chapter are coming soon.</div>${L.score?'<div class="row"><button class="btn" onclick="lMark()">Mark as done</button></div>':''}`;return}
+ const n=Q.length,need=Math.ceil(n*0.8);
+ if(L.r!=null){q.innerHTML=`<div class="card"><div class="big">${L.r}/${n}</div><div class="date">${L.score?(L.r>=need?'Passed: counted for your streak ✅':'Under 80%: ticked as checklist only, no streak point. The day shows yellow. Solve again.'):'Practice only: this does not change your streak.'}</div></div><div class="row"><button class="btn" onclick="lRetry()">Solve again</button><a class="btn" href="#home">Back to Home</a></div>`;return}
+ const j=L.idx,k0=Q[j],a=L.ans[j];
+ q.innerHTML=`<div class="card"><div class="note">Question ${j+1} of ${n} · ${L.score?'Need '+need+' right to count':'Practice only'}</div><div class="q">${esc(k0.q)}</div>${k0.o.map((o,m)=>`<button class="opt ${a==null?'':m===k0.a?'ok':m===a?'bad':''}" ${a==null?'':'disabled'} onclick="lAns(${m})"><b>${'ABCD'[m]}</b> ${esc(o)}</button>`).join('')}${a==null?'':`<div class="note" style="margin-top:8px">${a===k0.a?'Correct. ':'Not correct. '}${esc(k0.e)}</div><div class="row"><button class="btn" onclick="lNext()">${j<n-1?'Next →':'See result'}</button></div>`}</div>`}
+function lAns(m){const L=S.les;if(L.ans[L.idx]!=null)return;L.ans[L.idx]=m;save();renderQ()}
+function lNext(){const L=S.les,Q=QA[L.id].q;if(L.idx<Q.length-1){L.idx++}else{
+  L.r=Q.filter((q,j)=>L.ans[j]===q.a).length;
+  if(L.score&&!L.applied){const k=ds(dOf(L.i));S.log[k]=S.log[k]||{};S.log[k][L.tid]=L.r>=Math.ceil(Q.length*0.8)?'done':'weak';L.applied=true}}
+ save();renderQ()}
+function lRetry(){const L=S.les,st=(S.log[ds(dOf(L.i))]||{})[L.tid];S.les={...L,ans:[],idx:0,r:null,applied:false,score:st==='weak'};save();renderQ()}
+function lMark(){const L=S.les,k=ds(dOf(L.i));S.log[k]=S.log[k]||{};S.log[k][L.tid]='done';save();location.hash='#home'}
+
 const mmss=ms=>{const m=Math.floor(ms/60000),c=Math.floor(ms%60000/1000);return pad(m)+':'+pad(c)};
+function chId(ch){return ch?PM[ch.replace(/ \(revision\)$/,'')]||null:null}
 function boxHtml(x,i,st,live){
+ if(x.dt){const n=x.dt,r=S.dts[n],wait=!live||(nowM()<toM(x.s)&&!S.dcur);return`<button class="box" data-daily="${n}" ${(live&&!wait)||r||(!live&&i<nowIdx())?'':'disabled'} aria-label="Open daily test ${n}">${r&&!r.late?'✓':st==='miss'?'❌':wait&&!r&&live?'🔒':r?'✓':'📝'}</button>`}
+ if(x.ch&&chId(x.ch))return`<button class="box" data-lesson="${x.id}" data-day="${i}" aria-label="Open lesson: ${esc(x.t)}">${st==='done'||st==='weak'?'✓':st==='miss'?'❌':'▶'}</button>`;
  if(x.id===1&&P[i].startsWith('T:')){const n=i/7+1,r=S.tests[n],wait=live&&!r&&nowM()<toM(x.s)&&!(S.cur&&S.cur.n===n);
   return`<button class="box" data-open="${n}" ${(live&&!wait)||r?'':'disabled'} aria-label="Open test ${n}">${r?'✓':st==='miss'?'❌':wait?'🔒':'📝'}</button>`}
  return`<button class="box" data-id="${x.id}" ${live?'':'disabled'} aria-label="${esc(x.t)}">${st==='done'?'✓':st==='miss'?'❌':''}</button>`}
@@ -204,17 +283,16 @@ function testList(){const ni=nowIdx(),R=Object.values(S.tests),avg=R.length?(R.r
   const st=r?`<b>${r.score}/25</b>${r.late?' (late attempt)':''}`:ip?'In progress':lock?'🔒 Opens '+dOf(i).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+', 6:30 PM':ni===i?'📝 Open now':'Missed · tap to take it late';
   return`<div class="trow"><button class="btn" ${lock&&!r?'disabled':''} onclick="openTest(${T.n})">${r?'Result':ip?'Continue':lock?'🔒':'Open'}</button><div><b>Test ${T.n} · ${esc(T.sub)}</b><div class="s">${st}</div></div></div>`}).join('')+'</div>'}
 
-function render(){if(S.cur&&Date.now()>=S.cur.start+3600000){submit();return}settle();const a=document.getElementById('app'),h=location.hash;
- a.innerHTML=h==='#streak'?streak():h==='#test'?testView():h.startsWith('#results-')?resultView(+h.slice(9)):home();
- a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));
+function render(){if(S.cur&&Date.now()>=S.cur.start+3600000){submit();return}if(S.dcur&&Date.now()>=S.dcur.start+1800000){dSubmit();return}settle();const a=document.getElementById('app'),h=location.hash;
+ if(h==='#lesson'){lessonShell(a);return}a.dataset.les='';
+ a.innerHTML=h==='#streak'?streak():h==='#test'?testView():h==='#daily'?dailyView():h.startsWith('#dresult-')?dResult(+h.slice(9)):h.startsWith('#results-')?resultView(+h.slice(9)):home();
+ a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.daily?openDaily(+b.dataset.daily):b.dataset.lesson?openLesson(+b.dataset.day,+b.dataset.lesson):b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));
  const rs=document.getElementById('reset');
- if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{},tests:{}};save();render()}
- const bs=document.getElementById('bshow'),br=document.getElementById('brest'),bk=document.getElementById('bk');
- if(bs){bs.onclick=()=>{bk.value=JSON.stringify(S);bk.select()};br.onclick=()=>{try{const x=JSON.parse(bk.value);if(x&&x.log){S=x;S.tests=S.tests||{};save();render()}}catch(e){bk.value='Invalid backup text'}}}}
+ if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{},tests:{},dts:{}};save();render()}}
 window.addEventListener('hashchange',render);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
-load();render();setInterval(()=>{if(location.hash!=='#test'&&!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
+load();render();setInterval(()=>{if(location.hash!=='#test'&&location.hash!=='#lesson'&&location.hash!=='#daily'&&!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
 </script>
 </body>
 </html>
