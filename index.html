@@ -159,8 +159,7 @@ function home(){const ni=nowIdx(),i=Math.max(0,Math.min(N-1,ni)),live=ni>=0&&ni<
  return`<header><a class="btn" href="#streak">🔥 ${r.cur}</a><div><h1>Today’s plan</h1><div class="date">${dt} · Day ${i+1} of ${N}</div></div></header>
  ${banner?`<div class="banner">${banner}</div>`:''}
  <div class="stats"><div class="stat"><b>${dn}/4</b><span>done today</span></div><div class="stat"><b>${t.score}</b><span>streak points</span></div><div class="stat"><b>${r.cur}</b><span>day streak</span></div></div>
- ${weakBox()}${list}
- <h2>Settings</h2><div class="card"><button class="btn" id="reset">Reset all progress</button></div>`}
+ ${weakBox()}${list}}
 function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/GOAL*95);
  const cells=['S','M','T','W','T','F','S'].map(x=>`<div class="wd">${x}</div>`);
  for(let i=0;i<N;i++){const s=i<=ni?dayStatus(i):'';cells.push(`<div class="d ${s} ${i===ni?'today':''}" title="Day ${i+1}">${dOf(i).getDate()}</div>`)}
@@ -174,7 +173,6 @@ function streak(){const t=totals(),r=runs(),ni=nowIdx(),pct=Math.min(95,t.score/
  <div class="note" style="margin-top:10px">Green = all 4 tasks on time · Yellow = ticked but under 80%, solve again · Red = a missed task · Dashed = today</div></div>
  ${testList()}${dailyList()}<h2>Badges · ${got}/${b.length}</h2><div class="badges">${b.map(x=>`<div class="bd ${x[3]?'':'lock'}"><b>${x[0]} ${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div>
  <h2>Plan</h2><details class="card"><summary>Chapter for every day</summary><div class="chart">${rows}</div></details>`}
-let armed=false;
 const DM={};(window.DT||[]).forEach(d=>DM[d.date]=d.n);
 const dIdx=n=>Math.round((new Date(DT[n-1].date+'T00:00')-ST)/864e5);
 function openDaily(n){const i=dIdx(n),ni=nowIdx();
@@ -293,10 +291,8 @@ function testList(){const ni=nowIdx(),R=Object.values(S.tests),avg=R.length?(R.r
 function render(){if(S.cur&&Date.now()>=S.cur.start+3600000){submit();return}if(S.dcur&&Date.now()>=S.dcur.start+1800000){dSubmit();return}settle();const a=document.getElementById('app'),h=location.hash;
  if(h==='#lesson'){lessonShell(a);return}a.dataset.les='';
  a.innerHTML=h==='#streak'?streak():h==='#test'?testView():h==='#daily'?dailyView():h.startsWith('#dresult-')?dResult(+h.slice(9)):h.startsWith('#results-')?resultView(+h.slice(9)):home();
- a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.daily?openDaily(+b.dataset.daily):b.dataset.lesson?openLesson(+b.dataset.day,+b.dataset.lesson):b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));
- const rs=document.getElementById('reset');
- if(rs)rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tap again to erase all progress';return}armed=false;S={log:{},tests:{},dts:{}};save();render()}}
-window.addEventListener('hashchange',render);
+ a.querySelectorAll('.box').forEach(b=>b.onclick=()=>b.dataset.daily?openDaily(+b.dataset.daily):b.dataset.lesson?openLesson(+b.dataset.day,+b.dataset.lesson):b.dataset.open?openTest(+b.dataset.open):tick(b.dataset.id));}
+ {window.addEventListener('hashchange',render);}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 load();render();setInterval(()=>{if(location.hash!=='#test'&&location.hash!=='#lesson'&&location.hash!=='#daily'&&!(document.activeElement&&document.activeElement.tagName==='TEXTAREA'))render()},30000);
